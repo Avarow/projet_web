@@ -49,6 +49,13 @@ Grille.prototype.initialize = function(){
   }
 };
 
+Grille.prototype.clic = function(){
+    let div=document.getElementById("stop_clic");
+    div.addEventListener("click",function(){
+
+    });
+  };
+
 
 Grille.prototype.dessinGrille = function(){
   var width = this.nbX * this.dX;
@@ -104,12 +111,15 @@ Grille.prototype.majDessinObjet = function(objet,dx,dy){
   this.effacer(robot);
   robot.posX+=dx;
   robot.posY+=dy;
+  this.nbCur = this.nbCur++;
+  this.tab[robot.posX][robot.posY] = true;
   objet.dessin(this.ctx,this.dX,this.dY);
+  console.log(this.tab);
 };
 
 Grille.prototype.stopObjets = function(){
-  obj.forEach(function(objet){
-    objet.dort();
+  this.obj.forEach(function(objet){
+    this.objet.dort();
   });
 };
 
@@ -159,16 +169,16 @@ Grille.prototype.effacer = function(robot){
 
   Robot.prototype.perception = function() {
     if(this.reveille){
-    let mouvements=[];
-    if (this.grille.mvtAdmis(this,0,-1)) 
-      mouvements.push("top");
-    if (this.grille.mvtAdmis(this,0,1))
-      mouvements.push("bot");
-    if (this.grille.mvtAdmis(this,1,0))
-      mouvements.push("right");
-    if (this.grille.mvtAdmis(this,-1,0))
-      mouvements.push("left");
-    setTimeout(this.reflexion(mouvements),2000);
+      let mouvements=[];
+      if (this.grille.mvtAdmis(this,0,-1)) 
+       mouvements.push("top");
+      if (this.grille.mvtAdmis(this,0,1))
+       mouvements.push("bot");
+     if (this.grille.mvtAdmis(this,1,0))
+        mouvements.push("right");
+      if (this.grille.mvtAdmis(this,-1,0))
+        mouvements.push("left");
+      setTimeout(this.reflexion(mouvements),2000);
     }
   };
 
@@ -207,6 +217,10 @@ Grille.prototype.effacer = function(robot){
     this.eveille=false;
   }
  
+
+
+
+  
   // -------------------------------------------------------
   // scène globale
   var gr = new Grille(12,12,'mon_canvas');

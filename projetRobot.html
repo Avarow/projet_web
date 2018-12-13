@@ -23,7 +23,48 @@
 <script type="text/javascript">
   // -------------------------------------------------------
   // Méthodes de l'objet Grille  
- 
+  function Grille(nbX, nbY, canvaID){
+  this.nbX=nbX;
+  this.nbY=nbY;
+  this.canva=document.getElementById(canvaID);
+  this.ctx=canva.getContext("2d");
+  this.dX = dX;
+  this.dY = dY;
+  this.tab = [][];
+  this.obj=[];
+  this.nbC=nbX*nbY;
+  this.nbCur=0;
+}
+
+Grille.prototype.initialize = function(){
+  for (var i=0; i<nbX; i++)
+    for (var j=0; j<nbY; j++)
+      this.tab[i][j] = false;
+}
+
+
+Grille.prototype.dessinGrille = function(){
+  var width = this.nbX * this.dX;
+  var height = this.nbY * this.dY;
+  context.beginPath();
+  context.moveTo(0,0);
+  context.lineTo(width,0);
+  context.lineTo(width,width);
+  context.lineTo(0,height);
+  context.stroke();
+  context.closePath();
+}
+
+Grille.prototype.ajoutObjet = function(objet){
+  this objet = objet;
+  
+}
+
+
+
+
+
+
   // -------------------------------------------------------
   // Méthodes de l'objet
 

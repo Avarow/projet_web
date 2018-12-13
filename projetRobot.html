@@ -28,53 +28,68 @@
   this.nbY=nbY;
   this.canva=document.getElementById(canvaID);
   this.ctx=this.canva.getContext("2d");
-  this.dX = dX;
-  this.dY = dY;
+  this.dX = 20;
+  this.dY = 20;
   this.tab = [];
+  this.initialize();
   this.obj=[];
   this.nbC=nbX*nbY;
   this.nbCur=0;
-}
+;}
 
 Grille.prototype.initialize = function(){
-  for (var i=0; i<nbX; i++)
+  var i,j,k;
+  for (i=0; i<this.nbX; i++){
     this.tab[i]=[];
-    for (var j=0; j<nbY; j++)
-      this.tab[i][j] = false;
-}
+  }
+  for (j=0;j<this.nbX;j++){
+    for (k=0; k<this.nbY;k++){
+      this.tab[j][k]=false;
+    }
+  }
+};
 
 
 Grille.prototype.dessinGrille = function(){
   var width = this.nbX * this.dX;
   var height = this.nbY * this.dY;
-  context.beginPath();
-  context.moveTo(0,0);
-  context.lineTo(width,0);
-  context.lineTo(width,width);
-  context.lineTo(0,height);
-  context.stroke();
-  context.closePath();
-}
+  this.ctx.beginPath();
+  this.ctx.moveTo(0,0);
+  this.ctx.lineTo(width,0);
+  this.ctx.lineTo(width,width);
+  this.ctx.lineTo(0,height);
+  for (var i=0; i<width; i+=this.dX){
+  	this.ctx.moveTo(i,0);
+  	this.ctx.lineTo(i,height);
+  }
+  
+  for (var j=0; j<height; j+=this.dY){
+  	this.ctx.moveTo(0,j);
+  	this.ctx.lineTo(width,j);
+  }
+   this.ctx.stroke();
+   this.ctx.closePath();
+};
 
 Grille.prototype.ajoutObjet = function(objet){
-  this.objet = objet;
   this.obj[0] = objet;
   this.nbCur = this.nbCur++;
-  this.tab[objet.posX][objet.posY] = true;
-}
+  this.tab[0][0] = true;
+};
 
 
-Robot.prototype.dessin = function(){
-  dessinGrille();
-  foreach(Robot)
-  {
-    Robot.dessin(ctx,dx,dy);
-  }
+Grille.prototype.dessin = function(){
+  this.dessinGrille();
+  var self=this;
 
-}
+  this.obj.forEach(function(robot){
+    robot.dessin(self.ctx,self.dx,self.dy);
+  });
 
+};
 
 Grille.prototype.mvtAdmis = function(objet,dx,dy) {
+  console.log(this.nbX);
   if (this.tab[objet.posX+dx][objet.posY+dy] === undefined ){
     // alors l'index n'est pas défini, ce qui veut dire qu'on est en dehors du tableau intialisé
     return false;
@@ -90,15 +105,11 @@ Grille.prototype.majDessinObjet = function(objet,dx,dy){
   objet.dessin(this.ctx,this.dX,this.dY);
 };
 
-Grille.prototype.stopObjets(){
+Grille.prototype.stopObjets = function(){
   obj.forEach(function(objet){
     objet.dort();
   });
 };
-
-
-
-
   // -------------------------------------------------------
   // Méthodes de l'objet Robot 
   function Robot(posX, posY, temps, couleur){
@@ -137,13 +148,13 @@ Grille.prototype.stopObjets(){
 
   Robot.prototype.perception = function() {
     let mouvements=[];
-    if (mvtAdmis(this,0,-1)) 
+    if (Grille.prototype.mvtAdmis.call(this,0,-1)) 
       mouvements.push("top");
-    if (mvtAdmis(this,0,1))
+    if (Grille.prototype.mvtAdmis.call(this,0,1))
       mouvements.push("bot");
-    if (mvtAdmis(this,1,0))
+    if (Grille.prototype.mvtAdmis.call(this,1,0))
       mouvements.push("right");
-    if (mvtAdmis(this,-1,0))
+    if (Grille.prototype.mvtAdmis.call(this,-1,0))
       mouvements.push("left");
     setTimeOut(this.reflexion(mouvements),2000);
   };
@@ -170,7 +181,7 @@ Grille.prototype.stopObjets(){
         dx-=1;
         break;
     }
-    majDessinObjet(this,dx,dy);
+    Grille.prototype.majDessinObjet(this,dx,dy);
     setTimeOut(this.perception(),2000);
   };
 
@@ -193,7 +204,7 @@ Grille.prototype.stopObjets(){
   gr.ajoutObjet(rbt2);
   gr.ajoutObjet(rbt3);
   gr.dessin();
-  //rbt1.reveille();
+  rbt1.reveille();
   //rbt2.reveille();
   //rbt3.reveille();
 </script>

@@ -37,6 +37,7 @@
   this.nbCur=0;
 ;}
 
+
 Grille.prototype.initialize = function(){
   var i,j,k;
   for (i=0; i<this.nbX; i++){
@@ -50,6 +51,7 @@ Grille.prototype.initialize = function(){
 };
 
 
+
 Grille.prototype.dessinGrille = function(){
   var width = this.nbX * this.dX;
   var height = this.nbY * this.dY;
@@ -59,16 +61,12 @@ Grille.prototype.dessinGrille = function(){
   this.ctx.lineTo(width,width);
   this.ctx.lineTo(0,height);
   for (var i=0; i<width; i+=this.dX){
-  	this.ctx.moveTo(i,0);
-  	this.ctx.lineTo(i,height);
+  	for (var j=0; j<height; j+=this.dY){
+  		this.ctx.strokeRect(i,j,this.dX, this.dY);
+  	}
   }
-  
-  for (var j=0; j<height; j+=this.dY){
-  	this.ctx.moveTo(0,j);
-  	this.ctx.lineTo(width,j);
-  }
-   this.ctx.stroke();
-   this.ctx.closePath();
+  this.ctx.stroke();
+  this.ctx.closePath();
 };
 
 Grille.prototype.ajoutObjet = function(objet){
@@ -94,15 +92,13 @@ Grille.prototype.mvtAdmis = function(objet,dx,dy) {
     // alors l'index n'est pas défini, ce qui veut dire qu'on est en dehors du tableau intialisé
     return false;
   }
-  else
-    return true;
+  return true;
 };
 
 Grille.prototype.majDessinObjet = function(objet,dx,dy){
   objet.effacer(this.ctx,this.dX,this.dY);
-  objet.majPosX(dx);
-  objet.majPosY(dy);
-  objet.dessin(this.ctx,this.dX,this.dY);
+  objet.
+  objet.dessin(this.ctx, this.dx, this.dy);
 };
 
 Grille.prototype.stopObjets = function(){

@@ -26,10 +26,10 @@
   function Grille(nbX, nbY, canvaID){
   this.nbX=nbX;
   this.nbY=nbY;
-  this.canva=document.getElementById(canvaID);
-  this.ctx=this.canva.getContext("2d");
-  this.dX = 20;
-  this.dY = 20;
+  this.canva = document.getElementById(canvaID);
+  this.ctx = this.canva.getContext("2d");
+  this.dX = this.canva.width/nbX;
+  this.dY = this.canva.height/nbY;
   this.tab = [];
   this.initialize();
   this.obj=[];

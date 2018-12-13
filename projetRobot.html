@@ -35,7 +35,7 @@
   this.obj=[];
   this.nbC=nbX*nbY;
   this.nbCur=0;
-;}
+}
 
 Grille.prototype.initialize = function(){
   var i,j,k;
@@ -74,22 +74,21 @@ Grille.prototype.dessinGrille = function(){
 Grille.prototype.ajoutObjet = function(objet){
   this.obj.push(objet);
   this.nbCur = this.nbCur++;
-  this.tab[0][0] = true;
+  this.tab[objet.posX][objet.posY] = true;
 };
 
 
 Grille.prototype.dessin = function(){
   this.dessinGrille();
   var self=this;
-
   this.obj.forEach(function(robot){
-    robot.dessin(self.ctx,self.dx,self.dy);
+    // il faut bouger qqch puis dessiner le robot 
+    robot.dessin(self.ctx,self.dX,self.dY);
   });
 
 };
 
 Grille.prototype.mvtAdmis = function(objet,dx,dy) {
-  console.log(objet.posX+dx);
   if (this.tab[objet.posX+dx] === undefined ){
     // alors l'index n'est pas défini, ce qui veut dire qu'on est en dehors du tableau intialisé
     return false;
@@ -98,9 +97,13 @@ Grille.prototype.mvtAdmis = function(objet,dx,dy) {
 };
 
 Grille.prototype.majDessinObjet = function(objet,dx,dy){
-  objet.effacer(this.ctx,this.dX,this.dY);
-  objet.majPosX(dx);
-  objet.majPosY(dy);
+  
+  // on doit chercher dans notre liste d'objet le robot correspondant à objet et on met à jour ses coordonnées 
+  let index = this.obj.indexOf(objet);
+  let robot = this.obj[index];
+  this.effacer(robot);
+  robot.posX+=dx;
+  robot.posY+=dy;
   objet.dessin(this.ctx,this.dX,this.dY);
 };
 
@@ -108,6 +111,13 @@ Grille.prototype.stopObjets = function(){
   obj.forEach(function(objet){
     objet.dort();
   });
+};
+
+Grille.prototype.effacer = function(robot){
+  console.log(robot);
+  this.ctx.beginPath();
+  this.ctx.clearRect(robot.posX*this.dX-1,robot.posY*this.dY-1,this.dX+2,this.dY+2);
+  this.ctx.closePath();
 };
   // -------------------------------------------------------
   // Méthodes de l'objet Robot 
@@ -140,15 +150,9 @@ Grille.prototype.stopObjets = function(){
     - angle début
     - angle fin
     */
-    ctx.arc(dx/2,dy/2,dx/2,0,2*Math.PI);
+    ctx.arc((this.posX*dx)+dx/2,(this.posY*dy)+dy/2,dx/2,0,2*Math.PI);
     ctx.fillStyle=this.couleur;
     ctx.fill();
-    ctx.closePath();
-  };
-
-  Robot.prototype.effacer=function(ctx,dx,dy){
-    ctx.beginPath();
-    ctx.clearRect(0,0,dx,dy);
     ctx.closePath();
   };
 
@@ -191,7 +195,7 @@ Grille.prototype.stopObjets = function(){
         break;
     }
     this.grille.majDessinObjet(this,dx,dy);
-    setTimeout(this.perception(),200000);
+    //setTimeout(this.perception(),200000);
   };
 
   Robot.prototype.reveille = function(tabMvt) {
@@ -206,15 +210,15 @@ Grille.prototype.stopObjets = function(){
   // -------------------------------------------------------
   // scène globale
   var gr = new Grille(12,12,'mon_canvas');
-  var rbt1 = new Robot(4,4,0.1,'black',gr);
-  var rbt2 = new Robot(11,11,0.03,'red',gr);
-  var rbt3 = new Robot(5,10,0.05,'blue',gr);
+  var rbt1 = new Robot(1,1,0.1,'black',gr);
+  var rbt2 = new Robot(5,5,0.03,'red',gr);
+  var rbt3 = new Robot(7,7,0.05,'blue',gr);
   gr.ajoutObjet(rbt1);
- // gr.ajoutObjet(rbt2);
- // gr.ajoutObjet(rbt3);
+  gr.ajoutObjet(rbt2);
+  gr.ajoutObjet(rbt3);
   gr.dessin();
   rbt1.reveille();
-  //rbt2.reveille();
-  //rbt3.reveille();
+  rbt2.reveille();
+  rbt3.reveille();
 </script>
 </html>

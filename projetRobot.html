@@ -94,8 +94,7 @@ Grille.prototype.mvtAdmis = function(objet,dx,dy) {
     // alors l'index n'est pas défini, ce qui veut dire qu'on est en dehors du tableau intialisé
     return false;
   }
-  else
-    return true;
+  return true;
 };
 
 Grille.prototype.majDessinObjet = function(objet,dx,dy){
@@ -192,7 +191,7 @@ Grille.prototype.stopObjets = function(){
         break;
     }
     this.grille.majDessinObjet(this,dx,dy);
-    //setTimeout(this.perception(),200000);
+    setTimeout(this.perception(),200000);
   };
 
   Robot.prototype.reveille = function(tabMvt) {

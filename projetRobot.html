@@ -66,7 +66,75 @@ Grille.prototype.ajoutObjet = function(objet){
 
 
   // -------------------------------------------------------
-  // Méthodes de l'objet
+  // Méthodes de l'objet Robot 
+  function Robot(posX, posY, temps, couleur){
+    this.posX=posX;
+    this.posY=posY;
+    this.temps=temps;
+    this.couleur=couleur;
+    this.timeId=null;
+    this.eveille=false;
+  }
+
+  Robot.prototype.dessin=function(ctx, dx, dy){
+    // pour commencer le dessin 
+    ctx.beginPath();
+    // paramètres de arc : 
+    /*
+    - centre en X
+    - centre en Y
+    - rayon
+    - angle début
+    - angle fin
+    */
+    ctx.arc(dx/2,dy/2,dx/2,0,2*Math.PI);
+    ctx.fillStyle=this.couleur;
+    ctx.fill();
+  };
+
+  Robot.prototype.perception = function() {
+    let mouvements=[];
+    if (mvtAdmis(this,0,-1)) 
+      mouvements.push("top");
+    if (mvtAdmis(this,0,1))
+      mouvements.push("bot");
+    if (mvtAdmis(this,1,0))
+      mouvements.push("right");
+    if (mvtAdmis(this,-1,0))
+      mouvements.push("left");
+    setTimeOut(this.reflexion(mouvements),2000);
+  };
+
+  Robot.prototype.reflexion = function(mouvements) {
+    let act=mouvements[getRandomInt(0,mouvements.length-1)];
+    setTimeout(this.action(act),2000);
+  };
+
+  Robot.prototype.action = function(act) {
+    let dx=0;
+    let dy=0;
+    switch(act){
+      case "top" :  
+        dy-=1;
+        break;
+      case "bot" :  
+        dy+=1;
+        break;
+      case "right" :  
+        dx+=1;
+        break;
+      case "left" :  
+        dx-=1;
+        break;
+    }
+    majDessinObjet(this,dx,dy);
+    setTimeOut(this.perception(),2000);
+  };
+
+  Robot.prototype.reveille = function(tabMvt) {
+    this.eveille=true;
+    this.perception();
+  };
 
   // -------------------------------------------------------
   // scène globale

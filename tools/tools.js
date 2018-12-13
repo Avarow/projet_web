@@ -12,6 +12,7 @@ function Grille(nbX, nbY, canvaID){
 }
 
 
+
 function initialize(tab){
   for (var i=0; i<nbX; i++)
     for (var j=0; j<nbY; j++)

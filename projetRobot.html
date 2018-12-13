@@ -35,7 +35,7 @@
   this.obj=[];
   this.nbC=nbX*nbY;
   this.nbCur=0;
-}
+;}
 
 Grille.prototype.initialize = function(){
   var i,j,k;
@@ -58,8 +58,17 @@ Grille.prototype.dessinGrille = function(){
   this.ctx.lineTo(width,0);
   this.ctx.lineTo(width,width);
   this.ctx.lineTo(0,height);
-  this.ctx.stroke();
-  this.ctx.closePath();
+  for (var i=0; i<width; i+=this.dX){
+  	this.ctx.moveTo(i,0);
+  	this.ctx.lineTo(i,height);
+  }
+  
+  for (var j=0; j<height; j+=this.dY){
+  	this.ctx.moveTo(0,j);
+  	this.ctx.lineTo(width,j);
+  }
+   this.ctx.stroke();
+   this.ctx.closePath();
 };
 
 Grille.prototype.ajoutObjet = function(objet){
@@ -101,7 +110,6 @@ Grille.prototype.stopObjets = function(){
     objet.dort();
   });
 };
-
   // -------------------------------------------------------
   // Méthodes de l'objet Robot 
   function Robot(posX, posY, temps, couleur,gr){

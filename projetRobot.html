@@ -26,11 +26,11 @@
   function Grille(nbX, nbY, canvaID){
   this.nbX=nbX;
   this.nbY=nbY;
-  this.canva = document.getElementById(canvaID);
-  this.ctx = this.canva.getContext("2d");
-  this.dX = this.canva.width/nbX;
-  this.dY = this.canva.height/nbY;
-  this.tab = [];
+  this.canva=document.getElementById(canvaID);
+  this.ctx=this.canva.getContext("2d");
+  this.dX=this.canva.width/nbX;
+  this.dY=this.canva.height/nbY;
+  this.tab=[];
   this.initialize();
   this.obj=[];
   this.nbC=nbX*nbY;
@@ -74,7 +74,7 @@ Grille.prototype.dessinGrille = function(){
 Grille.prototype.ajoutObjet = function(objet){
   this.obj.push(objet);
   this.nbCur = this.nbCur++;
-  this.tab[0][0] = true;
+  this.tab[objet.posX][objet.posY] = true;
 };
 
 
@@ -89,7 +89,7 @@ Grille.prototype.dessin = function(){
 };
 
 Grille.prototype.mvtAdmis = function(objet,dx,dy) {
-  console.log(objet.posX+dx);
+  //console.log(objet.posX+dx);
   if (this.tab[objet.posX+dx] === undefined ){
     // alors l'index n'est pas défini, ce qui veut dire qu'on est en dehors du tableau intialisé
     return false;

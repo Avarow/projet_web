@@ -56,9 +56,23 @@ Grille.prototype.dessinGrille = function(){
 }
 
 Grille.prototype.ajoutObjet = function(objet){
-  this objet = objet;
-  
+  this.objet = objet;
+  this.obj[0] = objet;
+  this.nbCur = this.nbCur++;
+  this.tab[objet.posX][objet.posY] = true;
 }
+
+
+Robot.prototype.dessin = function(){
+  dessinGrille();
+  foreach(Robot)
+  {
+    Robot.dessin(ctx,dx,dy);
+  }
+
+
+
+
 
 
 

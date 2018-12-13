@@ -27,10 +27,10 @@
   this.nbX=nbX;
   this.nbY=nbY;
   this.canva=document.getElementById(canvaID);
-  this.ctx=canva.getContext("2d");
+  this.ctx=this.canva.getContext("2d");
   this.dX = dX;
   this.dY = dY;
-  this.tab = [][];
+  this.tab = [];
   this.obj=[];
   this.nbC=nbX*nbY;
   this.nbCur=0;
@@ -38,6 +38,7 @@
 
 Grille.prototype.initialize = function(){
   for (var i=0; i<nbX; i++)
+    this.tab[i]=[];
     for (var j=0; j<nbY; j++)
       this.tab[i][j] = false;
 }
@@ -70,11 +71,31 @@ Robot.prototype.dessin = function(){
     Robot.dessin(ctx,dx,dy);
   }
 
+}
 
 
+Grille.prototype.mvtAdmis = function(objet,dx,dy) {
+  if (this.tab[objet.posX+dx][objet.posY+dy] === undefined ){
+    // alors l'index n'est pas défini, ce qui veut dire qu'on est en dehors du tableau intialisé
+    return false;
+  }
+  else{
+    return true;
+  }
+};
 
+Grille.prototype.majDessinObjet = function(objet,dx,dy){
+  objet.majPosX(dx);
+  objet.majPosY(dy);
+  objet.dessin(this.ctx,this.dX,this.dY);
+};
 
-
+Grille.prototype.stopObjets(){
+  obj.forEach(function(objet){
+    objet.dort();
+  });
+};
+>>>>>>> b92809074e0d0bffa197e1167ccc87288ee0289d
 
 
 
@@ -90,6 +111,14 @@ Robot.prototype.dessin = function(){
     this.eveille=false;
   }
 
+  Robot.prototype.majPosX = function(x) {
+    this.posX+=x;
+  };
+
+  Robot.prototype.majPosY = function(y) {
+    this.posY+=y;
+  };
+
   Robot.prototype.dessin=function(ctx, dx, dy){
     // pour commencer le dessin 
     ctx.beginPath();
@@ -104,6 +133,7 @@ Robot.prototype.dessin = function(){
     ctx.arc(dx/2,dy/2,dx/2,0,2*Math.PI);
     ctx.fillStyle=this.couleur;
     ctx.fill();
+    ctx.closePath();
   };
 
   Robot.prototype.perception = function() {
@@ -149,6 +179,10 @@ Robot.prototype.dessin = function(){
     this.eveille=true;
     this.perception();
   };
+
+  Robot.prototype.dort = function(){
+    this.eveille=false;
+  }
 
   // -------------------------------------------------------
   // scène globale

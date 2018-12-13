@@ -109,12 +109,11 @@ Grille.prototype.majDessinObjet = function(objet,dx,dy){
   let index = this.obj.indexOf(objet);
   let robot = this.obj[index];
   this.effacer(robot);
-  robot.posX+=dx;
-  robot.posY+=dy;
   this.nbCur = this.nbCur++;
   this.tab[robot.posX][robot.posY] = true;
+  objet.majPosX(dx);
+  objet.majPosY(dy);
   objet.dessin(this.ctx,this.dX,this.dY);
-  console.log(this.tab);
 };
 
 Grille.prototype.stopObjets = function(){
@@ -128,6 +127,13 @@ Grille.prototype.effacer = function(robot){
   this.ctx.beginPath();
   this.ctx.clearRect(robot.posX*this.dX-1,robot.posY*this.dY-1,this.dX+2,this.dY+2);
   this.ctx.closePath();
+};
+
+
+Grille.prototype.arret = function(){
+	if (this.nbCyr === this.nbC){
+		this.stopObjets();
+	}
 };
   // -------------------------------------------------------
   // Méthodes de l'objet Robot 
@@ -169,16 +175,16 @@ Grille.prototype.effacer = function(robot){
 
   Robot.prototype.perception = function() {
     if(this.reveille){
-      let mouvements=[];
-      if (this.grille.mvtAdmis(this,0,-1)) 
-       mouvements.push("top");
-      if (this.grille.mvtAdmis(this,0,1))
-       mouvements.push("bot");
-     if (this.grille.mvtAdmis(this,1,0))
-        mouvements.push("right");
-      if (this.grille.mvtAdmis(this,-1,0))
-        mouvements.push("left");
-      setTimeout(this.reflexion(mouvements),2000);
+    	let mouvements=[];
+     if (this.grille.mvtAdmis(this,0,-1)) 
+    	  mouvements.push("top");
+   	 if (this.grille.mvtAdmis(this,0,1))
+     	 mouvements.push("bot");
+   	 if (this.grille.mvtAdmis(this,1,0))
+    	  mouvements.push("right");
+   	 if (this.grille.mvtAdmis(this,-1,0))
+     	 mouvements.push("left");
+  	  setTimeout(this.reflexion(mouvements),2000);
     }
   };
 

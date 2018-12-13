@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>TP1-4</title>
-	<meta charset="utf-8"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-	<link rel="stylesheet" href="tools/normalize.css"/>
-	<style type="text/css">
+  <title>TP1-4</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+  <link rel="stylesheet" href="tools/normalize.css"/>
+  <style type="text/css">
      * { text-align: center; }
      .canva { width: 350px; height: 350px; border-width: 2px; border-style: solid; margin-left: auto; margin-right: auto;}
      #stop:hover { font-variant: small-caps; cursor: pointer; }
@@ -14,10 +14,10 @@
 </head>
 <body>
    <div class="canva">
-		<canvas id="mon_canvas" width="350" height="350"> 
-  			Texte alternatif pour les navigateurs ne supportant pas Canvas.
-		</canvas>
-	</div>
+    <canvas id="mon_canvas" width="350" height="350"> 
+        Texte alternatif pour les navigateurs ne supportant pas Canvas.
+    </canvas>
+  </div>
   <div id="stop_clic">Stop</div>
 </body>
 <script type="text/javascript">
@@ -26,17 +26,16 @@
   function Grille(nbX, nbY, canvaID){
   this.nbX=nbX;
   this.nbY=nbY;
-  this.canva=document.getElementById(canvaID);
-  this.ctx=this.canva.getContext("2d");
-  this.dX=this.canva.width/nbX;
-  this.dY=this.canva.height/nbY;
-  this.tab=[];
+  this.canva = document.getElementById(canvaID);
+  this.ctx = this.canva.getContext("2d");
+  this.dX = this.canva.width/nbX;
+  this.dY = this.canva.height/nbY;
+  this.tab = [];
   this.initialize();
   this.obj=[];
   this.nbC=nbX*nbY;
   this.nbCur=0;
 }
-
 
 Grille.prototype.initialize = function(){
   var i,j,k;
@@ -51,7 +50,6 @@ Grille.prototype.initialize = function(){
 };
 
 
-
 Grille.prototype.dessinGrille = function(){
   var width = this.nbX * this.dX;
   var height = this.nbY * this.dY;
@@ -61,12 +59,16 @@ Grille.prototype.dessinGrille = function(){
   this.ctx.lineTo(width,width);
   this.ctx.lineTo(0,height);
   for (var i=0; i<width; i+=this.dX){
-  	for (var j=0; j<height; j+=this.dY){
-  		this.ctx.strokeRect(i,j,this.dX, this.dY);
-  	}
+    this.ctx.moveTo(i,0);
+    this.ctx.lineTo(i,height);
   }
-  this.ctx.stroke();
-  this.ctx.closePath();
+  
+  for (var j=0; j<height; j+=this.dY){
+    this.ctx.moveTo(0,j);
+    this.ctx.lineTo(width,j);
+  }
+   this.ctx.stroke();
+   this.ctx.closePath();
 };
 
 Grille.prototype.ajoutObjet = function(objet){
@@ -86,7 +88,16 @@ Grille.prototype.dessin = function(){
 
 };
 
+Grille.prototype.mvtAdmis = function(objet,dx,dy) {
+  if (this.tab[objet.posX+dx] === undefined ){
+    // alors l'index n'est pas défini, ce qui veut dire qu'on est en dehors du tableau intialisé
+    return false;
+  }
+  return true;
+};
 
+Grille.prototype.majDessinObjet = function(objet,dx,dy){
+  
   // on doit chercher dans notre liste d'objet le robot correspondant à objet et on met à jour ses coordonnées 
   let index = this.obj.indexOf(objet);
   let robot = this.obj[index];
@@ -94,7 +105,6 @@ Grille.prototype.dessin = function(){
   robot.posX+=dx;
   robot.posY+=dy;
   objet.dessin(this.ctx,this.dX,this.dY);
-
 };
 
 Grille.prototype.stopObjets = function(){

@@ -68,13 +68,9 @@ Grille.prototype.dessinGrille = function(){
   this.ctx.lineTo(width,width);
   this.ctx.lineTo(0,height);
   for (var i=0; i<width; i+=this.dX){
-    this.ctx.moveTo(i,0);
-    this.ctx.lineTo(i,height);
-  }
-  
-  for (var j=0; j<height; j+=this.dY){
-    this.ctx.moveTo(0,j);
-    this.ctx.lineTo(width,j);
+  	for (var j=0; j<height; j+= this.dY){
+  		this.ctx.strokeRect(i,j,this.dX, this.dY);
+  	}
   }
    this.ctx.stroke();
    this.ctx.closePath();
@@ -99,7 +95,6 @@ Grille.prototype.dessin = function(){
 
 Grille.prototype.mvtAdmis = function(objet,dx,dy) {
   if (objet.posX+dx<0 || objet.posX+dx>=this.nbX || objet.posY+dy<0 || objet.posY+dy>=this.nbY){
-    // alors l'index n'est pas défini, ce qui veut dire qu'on est en dehors du tableau intialisé
     return false;
   }
   return true;
@@ -162,7 +157,6 @@ Grille.prototype.arret = function(){
   };
 
   Robot.prototype.dessin=function(ctx, dx, dy){
-    // pour commencer le dessin 
     ctx.beginPath();
     // paramètres de arc : 
     /*
@@ -185,22 +179,20 @@ Grille.prototype.arret = function(){
     	let mouvements=[];
      if (this.grille.mvtAdmis(this,0,-1)) 
     	  mouvements.push("top");
-   	 if (this.grille.mvtAdmis(this,0,1))
+    	if (this.grille.mvtAdmis(this,0,1))
      	 mouvements.push("bot");
-   	 if (this.grille.mvtAdmis(this,1,0))
+   		if (this.grille.mvtAdmis(this,1,0))
     	  mouvements.push("right");
-   	 if (this.grille.mvtAdmis(this,-1,0))
+   	 	if (this.grille.mvtAdmis(this,-1,0))
      	 mouvements.push("left");
-  	  setTimeout(function(){
-        self.reflexion(mouvements)},self.temps);
+      this.reflexion(mouvements);
     }
   };
 
   Robot.prototype.reflexion = function(mouvements) {
     var self=this;
     let act=mouvements[getRandomInt(0,mouvements.length-1)];
-    setTimeout(function(){
-        self.action(act)},self.temps);
+    this.action(act);
   };
 
   Robot.prototype.action = function(act) {

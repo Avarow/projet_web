@@ -8,9 +8,6 @@ function Grille(nbX, nbY, canvaID){
 	this.nbCur=0;
 }
 
-
-
-
 function truncate(val)
 {
 	return (intval = val - val%1);

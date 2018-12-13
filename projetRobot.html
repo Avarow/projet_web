@@ -35,6 +35,7 @@
   this.obj=[];
   this.nbC=nbX*nbY;
   this.nbCur=0;
+  this.clic();
 }
 
 Grille.prototype.initialize = function(){
@@ -50,9 +51,10 @@ Grille.prototype.initialize = function(){
 };
 
 Grille.prototype.clic = function(){
+  var self=this;
     let div=document.getElementById("stop_clic");
     div.addEventListener("click",function(){
-
+      self.stopObjets();
     });
   };
 
@@ -80,7 +82,7 @@ Grille.prototype.dessinGrille = function(){
 
 Grille.prototype.ajoutObjet = function(objet){
   this.obj.push(objet);
-  this.nbCur = this.nbCur++;
+  this.nbCur++;
   this.tab[objet.posX][objet.posY] = true;
 };
 
@@ -96,7 +98,7 @@ Grille.prototype.dessin = function(){
 };
 
 Grille.prototype.mvtAdmis = function(objet,dx,dy) {
-  if (this.tab[objet.posX+dx] === undefined ){
+  if (objet.posX+dx<0 || objet.posX+dx>=this.nbX || objet.posY+dy<0 || objet.posY+dy>=this.nbY){
     // alors l'index n'est pas défini, ce qui veut dire qu'on est en dehors du tableau intialisé
     return false;
   }
@@ -109,29 +111,33 @@ Grille.prototype.majDessinObjet = function(objet,dx,dy){
   let index = this.obj.indexOf(objet);
   let robot = this.obj[index];
   this.effacer(robot);
-  this.nbCur = this.nbCur++;
-  this.tab[robot.posX][robot.posY] = true;
+  if (!this.tab[robot.posX][robot.posY]){
+    this.nbCur++;
+    this.tab[robot.posX][robot.posY] = true;
+  }
   objet.majPosX(dx);
   objet.majPosY(dy);
   objet.dessin(this.ctx,this.dX,this.dY);
+  this.arret();
 };
 
 Grille.prototype.stopObjets = function(){
   this.obj.forEach(function(objet){
-    this.objet.dort();
+    objet.dort();
   });
 };
 
 Grille.prototype.effacer = function(robot){
   console.log(robot);
   this.ctx.beginPath();
-  this.ctx.clearRect(robot.posX*this.dX-1,robot.posY*this.dY-1,this.dX+2,this.dY+2);
+  this.ctx.clearRect(robot.posX*this.dX-1,robot.posY*this.dY-1,this.dX+1,this.dY+1);
   this.ctx.closePath();
 };
 
 
 Grille.prototype.arret = function(){
-	if (this.nbCyr === this.nbC){
+  console.log(this.nbCur + " / " + this.nbC);
+	if (this.nbCur >= this.nbC){
 		this.stopObjets();
 	}
 };
@@ -174,7 +180,8 @@ Grille.prototype.arret = function(){
 
 
   Robot.prototype.perception = function() {
-    if(this.reveille){
+    var self=this;
+    if(this.eveille){
     	let mouvements=[];
      if (this.grille.mvtAdmis(this,0,-1)) 
     	  mouvements.push("top");
@@ -184,16 +191,20 @@ Grille.prototype.arret = function(){
     	  mouvements.push("right");
    	 if (this.grille.mvtAdmis(this,-1,0))
      	 mouvements.push("left");
-  	  setTimeout(this.reflexion(mouvements),2000);
+  	  setTimeout(function(){
+        self.reflexion(mouvements)},self.temps);
     }
   };
 
   Robot.prototype.reflexion = function(mouvements) {
+    var self=this;
     let act=mouvements[getRandomInt(0,mouvements.length-1)];
-    setTimeout(this.action(act),2000);
+    setTimeout(function(){
+        self.action(act)},self.temps);
   };
 
   Robot.prototype.action = function(act) {
+    var self=this;
     let dx=0;
     let dy=0;
     switch(act){
@@ -211,7 +222,8 @@ Grille.prototype.arret = function(){
         break;
     }
     this.grille.majDessinObjet(this,dx,dy);
-    //setTimeout(this.perception(),200000);
+    setTimeout(function(){
+        self.perception()},self.temps*1000);
   };
 
   Robot.prototype.reveille = function(tabMvt) {
@@ -240,5 +252,6 @@ Grille.prototype.arret = function(){
   rbt1.reveille();
   rbt2.reveille();
   rbt3.reveille();
+
 </script>
 </html>

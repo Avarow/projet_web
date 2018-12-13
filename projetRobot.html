@@ -59,13 +59,9 @@ Grille.prototype.dessinGrille = function(){
   this.ctx.lineTo(width,width);
   this.ctx.lineTo(0,height);
   for (var i=0; i<width; i+=this.dX){
-    this.ctx.moveTo(i,0);
-    this.ctx.lineTo(i,height);
-  }
-  
-  for (var j=0; j<height; j+=this.dY){
-    this.ctx.moveTo(0,j);
-    this.ctx.lineTo(width,j);
+  	for (var j=0; j<height; j+= this.dY){
+  		this.ctx.strokeRect(i,j,this.dX, this.dY);
+  	}
   }
    this.ctx.stroke();
    this.ctx.closePath();
@@ -108,7 +104,7 @@ Grille.prototype.majDessinObjet = function(objet,dx,dy){
 };
 
 Grille.prototype.stopObjets = function(){
-  obj.forEach(function(objet){s
+  obj.forEach(function(objet){
     objet.dort();
   });
 };
@@ -169,13 +165,13 @@ Grille.prototype.arret = function(){
     	let mouvements=[];
     	if (this.grille.mvtAdmis(this,0,-1)) 
     	  mouvements.push("top");
-   	 if (this.grille.mvtAdmis(this,0,1))
+    	if (this.grille.mvtAdmis(this,0,1))
      	 mouvements.push("bot");
-   	 if (this.grille.mvtAdmis(this,1,0))
+   		if (this.grille.mvtAdmis(this,1,0))
     	  mouvements.push("right");
-   	 if (this.grille.mvtAdmis(this,-1,0))
+   	 	if (this.grille.mvtAdmis(this,-1,0))
      	 mouvements.push("left");
-  	  setTimeout(this.reflexion(mouvements),2000);
+  	  	setTimeout(this.reflexion(mouvements),2000);
     }
   };
 

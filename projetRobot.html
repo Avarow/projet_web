@@ -38,6 +38,16 @@
   this.clic();
 }
 
+Grille.prototype.compterRobot = function(){
+  var compteurdodo=0;
+  console.log("robots : " + this.obj.length);
+  this.obj.forEach(function(objet){
+    if (!objet.eveille)
+      compteurdodo++;
+  });
+  console.log(compteurdodo + " dorment");
+}
+
 Grille.prototype.initialize = function(){
   var i,j,k;
   for (i=0; i<this.nbX; i++){
@@ -45,7 +55,7 @@ Grille.prototype.initialize = function(){
   }
   for (j=0;j<this.nbX;j++){
     for (k=0; k<this.nbY;k++){
-      this.tab[j][k]=false;
+      this.tab[j][k]=[];
     }
   }
 };
@@ -76,12 +86,17 @@ Grille.prototype.dessinGrille = function(){
    this.ctx.closePath();
 };
 
+
+
 Grille.prototype.ajoutObjet = function(objet){
   this.obj.push(objet);
+  this.tab[objet.posX][objet.posY].push(objet);
+  /*
   if (!this.tab[objet.posX][objet.posY]){
     this.nbCur++;
     this.tab[objet.posX][objet.posY] = true;
   }
+  */
 };
 
 
@@ -96,7 +111,14 @@ Grille.prototype.dessin = function(){
 };
 
 Grille.prototype.mvtAdmis = function(objet,dx,dy) {
-  if (objet.posX+dx<0 || objet.posX+dx>=this.nbX || objet.posY+dy<0 || objet.posY+dy>=this.nbY){
+/*
+    this.obj.find(function(robot){
+      if(robot.posX==objet.posX+dx && robot.posY==objet.posY+dy){
+      compteur++;
+    }});
+
+    */
+  if (objet.posX+dx<0 || objet.posX+dx>=this.nbX || objet.posY+dy<0 || objet.posY+dy>=this.nbY || this.tab[objet.posX+dx][objet.posY+dy].length>=2){
     return false;
   }
   return true;
@@ -104,29 +126,37 @@ Grille.prototype.mvtAdmis = function(objet,dx,dy) {
 
 Grille.prototype.verifRobot = function(objet,dx,dy){
   let robot2;
-  robot2=this.obj.find(function(robot){
-    return (robot.posX==objet.posX+dx && robot.posY==objet.posY+dy);
-  });
+  /*robot2=this.obj.find(function(robot){
+    return (robot.posX==objet.posX+dx && robot.posY==objet.posY+dy );
+  });*/
+
+  robot2=this.tab[objet.posX+dx][objet.posY+dy];
   // si celle est différente de "undefined", alors il y a un robot à la position où l'on souhaite aller
-  if (robot2 != undefined){
-    this.couleur(objet,robot2);
+  if (robot2[0] != undefined && robot2.length<=2){
+    //console.log("robot trouvé");
+    this.couleur(objet,robot2[0]);
   }
 };
 
 Grille.prototype.majDessinObjet = function(objet,dx,dy){
   
   // on doit chercher dans notre liste d'objet le robot correspondant à objet et on met à jour ses coordonnées 
+  //this.compterRobot();
   let index = this.obj.indexOf(objet);
   let robot = this.obj[index];
+
   this.effacer(robot);
-  if (!this.tab[robot.posX][robot.posY]){
-    this.nbCur++;
-    this.tab[robot.posX][robot.posY] = true;
-  }
+
+  // on enleve tous les robots qui étaient sur la ligne !!! probleme !!!!! 
+  let indice=this.tab[robot.posX][robot.posY].indexOf(objet);
+  //this.tab[robot.posX][robot.posY].pop();
+  this.tab[robot.posX][robot.posY]=[];
   objet.majPosX(dx);
   objet.majPosY(dy);
+  this.tab[objet.posX][objet.posY].push(objet);
   objet.dessin(this.ctx,this.dX,this.dY);
-  this.arret();
+  //this.dessin();
+  //this.arret();
 };
 
 Grille.prototype.stopObjets = function(){
@@ -143,11 +173,27 @@ Grille.prototype.effacer = function(robot){
 
 
 Grille.prototype.arret = function(){
-  console.log(this.nbCur + " / " + this.nbC);
 	if (this.nbCur >= this.nbC){
 		this.stopObjets();
 	}
 };
+
+Grille.prototype.couleur = function(robot1, robot2){
+	if (robot1.couleur == robot2.couleur){
+		robot1.dort();
+    robot1.dessin(this.ctx,this.dX,this.dY);
+    //console.log('kter='+kter);
+	}
+	else{
+		var robot3 = new Robot(robot1.posX, robot1.posY, robot1.temps, robot1.couleur, this);
+		this.ajoutObjet(robot3);
+		robot3.dessin(this.ctx,this.dX,this.dY); 
+    robot3.reveille();
+    //console.log('iter='+iter);
+    //console.log(this.obj.length);
+	}
+}
+
   // -------------------------------------------------------
   // Méthodes de l'objet Robot 
   function Robot(posX, posY, temps, couleur,gr){
@@ -169,6 +215,7 @@ Grille.prototype.arret = function(){
   };
 
   Robot.prototype.dessin=function(ctx, dx, dy){
+
     ctx.beginPath();
     // paramètres de arc : 
     /*
@@ -178,7 +225,7 @@ Grille.prototype.arret = function(){
     - angle début
     - angle fin
     */
-    ctx.arc((this.posX*dx)+dx/2,(this.posY*dy)+dy/2,dx/2,0,2*Math.PI);
+    ctx.arc((this.posX*dx)+dx/2,(this.posY*dy)+dy/2,dx*0.45,0,2*Math.PI);
     ctx.fillStyle=this.couleur;
     ctx.fill();
     ctx.closePath();
@@ -186,8 +233,6 @@ Grille.prototype.arret = function(){
 
 
   Robot.prototype.perception = function() {
-    var self=this;
-    if(this.eveille){
     	let mouvements=[];
      if (this.grille.mvtAdmis(this,0,-1)) 
     	  mouvements.push("top");
@@ -196,15 +241,19 @@ Grille.prototype.arret = function(){
    		if (this.grille.mvtAdmis(this,1,0))
     	  mouvements.push("right");
    	 	if (this.grille.mvtAdmis(this,-1,0))
-     	 mouvements.push("left");
+     	  mouvements.push("left");
       this.reflexion(mouvements);
-    }
   };
 
   Robot.prototype.reflexion = function(mouvements) {
     var self=this;
-    let act=mouvements[getRandomInt(0,mouvements.length-1)];
-    this.action(act);
+    if (mouvements.length===0){
+     this.dort();
+    }
+    else{
+      let act=mouvements[getRandomInt(0,mouvements.length-1)];
+      this.action(act);
+    }
   };
 
   Robot.prototype.action = function(act) {
@@ -227,18 +276,19 @@ Grille.prototype.arret = function(){
     }
     this.grille.verifRobot(this,dx,dy);
     this.grille.majDessinObjet(this,dx,dy);
-    setTimeout(function(){
-        self.perception()},self.temps*1000);
+    this.timeId=setTimeout(function(){
+        self.perception()},self.temps*10000);
   };
 
-  Robot.prototype.reveille = function(tabMvt) {
+  Robot.prototype.reveille = function() {
     this.eveille=true;
     this.perception();
   };
 
   Robot.prototype.dort = function(){
     this.eveille=false;
-  }
+    clearTimeout(this.timeId);
+  };
  
 
 
@@ -247,9 +297,9 @@ Grille.prototype.arret = function(){
   // -------------------------------------------------------
   // scène globale
   var gr = new Grille(12,12,'mon_canvas');
-  var rbt1 = new Robot(1,1,0.1,'black',gr);
-  var rbt2 = new Robot(5,5,0.03,'red',gr);
-  var rbt3 = new Robot(7,7,0.05,'blue',gr);
+  var rbt1 = new Robot(5,5,0.1,'blue',gr);
+  var rbt2 = new Robot(6,6,0.03,'red',gr);
+  var rbt3 = new Robot(7,7,0.05,'black',gr);
   gr.ajoutObjet(rbt1);
   gr.ajoutObjet(rbt2);
   gr.ajoutObjet(rbt3);

@@ -129,14 +129,16 @@ Grille.prototype.verifRobot = function(objet,dx,dy){
   /*robot2=this.obj.find(function(robot){
     return (robot.posX==objet.posX+dx && robot.posY==objet.posY+dy );
   });*/
-
   robot2=this.tab[objet.posX+dx][objet.posY+dy];
   // si celle est différente de "undefined", alors il y a un robot à la position où l'on souhaite aller
   if (robot2[0] != undefined && robot2.length<=2){
     //console.log("robot trouvé");
     this.couleur(objet,robot2[0]);
+
   }
 };
+    
+
 
 Grille.prototype.majDessinObjet = function(objet,dx,dy){
   
@@ -179,6 +181,7 @@ Grille.prototype.arret = function(){
 };
 
 Grille.prototype.couleur = function(robot1, robot2){
+
 	if (robot1.couleur == robot2.couleur){
 		robot1.dort();
     robot1.dessin(this.ctx,this.dX,this.dY);
@@ -192,7 +195,8 @@ Grille.prototype.couleur = function(robot1, robot2){
     //console.log('iter='+iter);
     //console.log(this.obj.length);
 	}
-}
+};
+
 
   // -------------------------------------------------------
   // Méthodes de l'objet Robot 

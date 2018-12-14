@@ -78,8 +78,10 @@ Grille.prototype.dessinGrille = function(){
 
 Grille.prototype.ajoutObjet = function(objet){
   this.obj.push(objet);
-  this.nbCur++;
-  this.tab[objet.posX][objet.posY] = true;
+  if (!this.tab[objet.posX][objet.posY]){
+    this.nbCur++;
+    this.tab[objet.posX][objet.posY] = true;
+  }
 };
 
 
@@ -99,6 +101,17 @@ Grille.prototype.mvtAdmis = function(objet,dx,dy) {
   }
   return true;
 
+};
+
+Grille.prototype.verifRobot = function(objet,dx,dy){
+  let robot2;
+  robot2=this.obj.find(function(robot){
+    return (robot2.posX==objet.posX+dx && robot2.posY==objet.posY+dy);
+  });
+  // si celle est différente de "undefined", alors il y a un robot à la position où l'on souhaite aller
+  if (cell != undefined){
+    this.couleur(objet,robot2);
+  }
 };
 
 Grille.prototype.majDessinObjet = function(objet,dx,dy){
@@ -124,7 +137,6 @@ Grille.prototype.stopObjets = function(){
 };
 
 Grille.prototype.effacer = function(robot){
-  console.log(robot);
   this.ctx.beginPath();
   this.ctx.clearRect(robot.posX*this.dX-0.25,robot.posY*this.dY-0.25,this.dX+0.25,this.dY+0.25);
   this.ctx.closePath();
@@ -231,6 +243,7 @@ Grille.prototype.couleur = function(robot1, robot2){
         dx-=1;
         break;
     }
+    this.grille.verifRobot(this,dx,dy);
     this.grille.majDessinObjet(this,dx,dy);
     setTimeout(function(){
         self.perception()},self.temps*1000);

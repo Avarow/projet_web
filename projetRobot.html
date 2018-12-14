@@ -114,6 +114,17 @@ Grille.prototype.verifRobot = function(objet,dx,dy){
   }
 };
 
+Grille.prototype.verifRobot = function(objet,dx,dy){
+  let robot2;
+  robot2=this.obj.find(function(robot){
+    return (robot2.posX==objet.posX+dx && robot2.posY==objet.posY+dy);
+  });
+  // si celle est différente de "undefined", alors il y a un robot à la position où l'on souhaite aller
+  if (cell != undefined){
+    this.couleur(objet,robot2);
+  }
+};
+
 Grille.prototype.majDessinObjet = function(objet,dx,dy){
   
   // on doit chercher dans notre liste d'objet le robot correspondant à objet et on met à jour ses coordonnées 

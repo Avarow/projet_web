@@ -100,27 +100,15 @@ Grille.prototype.mvtAdmis = function(objet,dx,dy) {
     return false;
   }
   return true;
-
 };
 
 Grille.prototype.verifRobot = function(objet,dx,dy){
   let robot2;
   robot2=this.obj.find(function(robot){
-    return (robot2.posX==objet.posX+dx && robot2.posY==objet.posY+dy);
+    return (robot.posX==objet.posX+dx && robot.posY==objet.posY+dy);
   });
   // si celle est différente de "undefined", alors il y a un robot à la position où l'on souhaite aller
-  if (cell != undefined){
-    this.couleur(objet,robot2);
-  }
-};
-
-Grille.prototype.verifRobot = function(objet,dx,dy){
-  let robot2;
-  robot2=this.obj.find(function(robot){
-    return (robot2.posX==objet.posX+dx && robot2.posY==objet.posY+dy);
-  });
-  // si celle est différente de "undefined", alors il y a un robot à la position où l'on souhaite aller
-  if (cell != undefined){
+  if (robot2 != undefined){
     this.couleur(objet,robot2);
   }
 };
@@ -149,10 +137,9 @@ Grille.prototype.stopObjets = function(){
 
 Grille.prototype.effacer = function(robot){
   this.ctx.beginPath();
-  this.ctx.clearRect(robot.posX*this.dX-0.25,robot.posY*this.dY-0.25,this.dX+0.25,this.dY+0.25);
+  this.ctx.clearRect(robot.posX*this.dX-1,robot.posY*this.dY-1,this.dX+1,this.dY+1);
   this.ctx.closePath();
 };
- 
 
 
 Grille.prototype.arret = function(){
@@ -161,18 +148,6 @@ Grille.prototype.arret = function(){
 		this.stopObjets();
 	}
 };
-
-Grille.prototype.couleur = function(robot1, robot2){
-	if (robot1.couleur === robot2.couleur){
-		robot1.dort();
-	}
-	else{
-		var robot3 = new Robot(robot1.posX, robot1.posY, robot1.temps, robot1.couleur, this);
-		this.ajoutObjet(robot3);
-		robot3.dessin(self.ctx,self.dX,self.dY);
-	}
-
-}
   // -------------------------------------------------------
   // Méthodes de l'objet Robot 
   function Robot(posX, posY, temps, couleur,gr){
@@ -226,15 +201,11 @@ Grille.prototype.couleur = function(robot1, robot2){
     }
   };
 
-
-
   Robot.prototype.reflexion = function(mouvements) {
     var self=this;
     let act=mouvements[getRandomInt(0,mouvements.length-1)];
     this.action(act);
   };
-
-
 
   Robot.prototype.action = function(act) {
     var self=this;
@@ -275,7 +246,7 @@ Grille.prototype.couleur = function(robot1, robot2){
   
   // -------------------------------------------------------
   // scène globale
-  var gr = new Grille(10,10,'mon_canvas');
+  var gr = new Grille(12,12,'mon_canvas');
   var rbt1 = new Robot(1,1,0.1,'black',gr);
   var rbt2 = new Robot(5,5,0.03,'red',gr);
   var rbt3 = new Robot(7,7,0.05,'blue',gr);

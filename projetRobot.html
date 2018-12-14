@@ -117,10 +117,10 @@ Grille.prototype.verifRobot = function(objet,dx,dy){
 Grille.prototype.verifRobot = function(objet,dx,dy){
   let robot2;
   robot2=this.obj.find(function(robot){
-    return (robot2.posX==objet.posX+dx && robot2.posY==objet.posY+dy);
+    return (robot.posX==objet.posX+dx && robot.posY==objet.posY+dy);
   });
   // si celle est différente de "undefined", alors il y a un robot à la position où l'on souhaite aller
-  if (cell != undefined){
+  if (robot2 != undefined){
     this.couleur(objet,robot2);
   }
 };
@@ -156,26 +156,27 @@ Grille.prototype.effacer = function(robot){
 
 
 Grille.prototype.arret = function(){
-  console.log(this.nbCur + " / " + this.nbC);
+  //console.log(this.nbCur + " / " + this.nbC);
 	if (this.nbCur >= this.nbC){
 		this.stopObjets();
 	}
 };
 
 Grille.prototype.couleur = function(robot1, robot2){
-	if (robot1.couleur === robot2.couleur){
+	console.log(robot1);
+	console.log(robot2);
+	if (robot1.couleur == robot2.couleur){
 		robot1.dort();
 	}
 	else{
 		var robot3 = new Robot(robot1.posX, robot1.posY, robot1.temps, robot1.couleur, this);
 		this.ajoutObjet(robot3);
-		robot3.dessin(self.ctx,self.dX,self.dY);
+		robot3.dessin(this.ctx,this.dX,this.dY);
 	}
-
+	console.log(robot1.couleur == robot2.couleur);
 }
 
 
-/// sdssfds
   // -------------------------------------------------------
   // Méthodes de l'objet Robot 
   function Robot(posX, posY, temps, couleur,gr){
@@ -260,7 +261,7 @@ Grille.prototype.couleur = function(robot1, robot2){
     this.grille.verifRobot(this,dx,dy);
     this.grille.majDessinObjet(this,dx,dy);
     setTimeout(function(){
-        self.perception()},self.temps*1000);
+        self.perception()},self.temps*5000);
   };
 
   Robot.prototype.reveille = function(tabMvt) {
